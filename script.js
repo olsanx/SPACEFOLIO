@@ -684,7 +684,35 @@ document.addEventListener("mousemove", (e) => {
 });
 
 
+const aboutSection = document.querySelector(".about");
+const layers = document.querySelectorAll(".layer");
+const aboutSticky = document.querySelector(".about-sticky");
 
+window.addEventListener("scroll", () => {
+  const rect = aboutSection.getBoundingClientRect();
+  const scrollProgress = -rect.top / (aboutSection.offsetHeight - window.innerHeight);
+  
+  // Clamp the progress between 0 and 1
+  const clampedProgress = Math.max(0, Math.min(1, scrollProgress));
+  
+  layers.forEach((layer, index) => {
+    const depth = (index - 1) * 400;
+    // Increase movement range to push layers completely out of view
+    const movement = clampedProgress * 2000; // Increased from 800 to 2000
+    
+    layer.style.transform = `
+      translate(-50%, -50%)
+      translateZ(${depth + movement}px)
+    `;
+  });
+  
+  // Optional: Add a fade out effect at the end
+  if (clampedProgress > 0.8) {
+    aboutSticky.style.opacity = 1 - (clampedProgress - 0.8) * 5;
+  } else {
+    aboutSticky.style.opacity = 1;
+  }
+});
 
 
 
